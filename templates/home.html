@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django To-Do List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen py-10 px-4">
+
+    <div class="max-w-md mx-auto bg-white shadow-xl rounded-xl overflow-hidden border border-gray-200">
+
+        <div class="px-6 py-4 bg-indigo-600">
+            <h1 class="text-white font-bold text-xl flex items-center">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path>
+                </svg>
+                My Lists
+            </h1>
+        </div>
+
+        <form method="POST" action="." class="p-4 border-b border-gray-100 flex gap-2">
+            {% csrf_token %}
+            <input
+                type="text"
+                name="title"
+                placeholder="New list name"
+                class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm"
+                required
+            >
+            <button
+                type="submit"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition duration-200"
+            >
+                Create
+            </button>
+        </form>
+
+        <ul class="divide-y divide-gray-100">
+            {% for todo_list in lists %}
+            <li class="px-6 py-4 flex items-center justify-between">
+                <a href="{% url 'list-detail' todo_list.id %}" class="text-sm font-semibold text-gray-800">
+                    {{ todo_list.title }}
+                </a>
+                <div class="flex items-center gap-2">
+                    <a href="{% url 'list-edit' todo_list.id %}" class="text-xs text-indigo-600 hover:underline">Edit</a>
+                    <form method="POST" action="{% url 'list-delete' todo_list.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="text-xs text-red-500 hover:text-red-600">Delete</button>
+                    </form>
+                </div>
+            </li>
+            {% empty %}
+            <li class="py-10 text-center">
+                <div class="text-gray-300 mb-2">
+                    <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 6h16M4 12h16M4 18h7"></path>
+                    </svg>
+                </div>
+                <p class="text-gray-500 text-sm">No lists yet. Create one above!</p>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</body>
+</html>
